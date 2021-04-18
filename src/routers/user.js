@@ -3,15 +3,17 @@ const multer = require('multer')
 const sharp = require('sharp')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const Game = require('../models/game')
 const router = new express.Router()
 
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
+    const games = []
 
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        res.status(201).send({ user, token })
+        res.status(201).send({ user, token, games })
     } catch (e) {
         res.status(400).send(e)
     }
@@ -21,13 +23,15 @@ router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({ user, token })
+        const games = await Game.find({owner: user._id})
+        res.send({ user, token, games })
     } catch (e) {
         res.status(400).send()
     }
 })
 
 router.post('/users/logout', auth, async (req, res) => {
+    console.log(req)
     try {
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
@@ -52,7 +56,9 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 })
 
 router.get('/users/me', auth, async (req, res) => {
-    res.send(req.user)
+    const games = await Game.find({owner: req.user._id})
+    const user = req.user
+    res.send({ user, games })
 })
 
 router.patch('/users/me', auth, async (req, res) => {
