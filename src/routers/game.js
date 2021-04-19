@@ -55,10 +55,8 @@ router.get('/games', auth, async (req, res) => {
 })
 
 router.get('/games/:id', auth, async (req, res) => {
-    const _id = req.params.id
-
     try {
-        const game = await Game.findOne({ _id, owner: req.user._id })
+        const game = await Game.findOne({ bgaId: req.params.id, owner: req.user._id })
 
         if (!game) {
             return res.status(404).send()
@@ -80,7 +78,7 @@ router.patch('/games/:id', auth, async (req, res) => {
     }
 
     try {
-        const game = await Game.findOne({ _id: req.params.id, owner: req.user._id })
+        const game = await Game.findOne({ bgaId: req.params.id, owner: req.user._id })
 
         updates.forEach((update) => game[update] = req.body[update])
         await game.save()
