@@ -7,23 +7,24 @@ const gameRouter = require('./routers/game')
 
 const app = express()
 
-const allowCrossDomain = (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-
-    // intercept OPTIONS method
-    if ('OPTIONS' == req.method) {
-      res.send(200);
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested, Content-Type, Accept Authorization"
+    )
+    if (req.method === "OPTIONS") {
+      res.header(
+        "Access-Control-Allow-Methods",
+        "POST, PUT, PATCH, GET, DELETE"
+      )
+      return res.status(200).json({})
     }
-    else {
-      next();
-    }
-}
+    next()
+})
 
 app.use(express.json())
-app.use(allowCrossDomain)
-app.use(cors({credentials: true, origin: 'https://werner-bg-logger-client.herokuapp.com'}))
+// app.use(cors({credentials: true, origin: 'https://werner-bg-logger-client.herokuapp.com'}))
 app.use(cookieParser())
 app.use(userRouter)
 app.use(gameRouter)
