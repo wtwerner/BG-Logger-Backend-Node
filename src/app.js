@@ -7,7 +7,7 @@ const gameRouter = require('./routers/game')
 
 const app = express()
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
+app.use(cors({credentials: true, origin: 'https://werner-bg-logger-client.herokuapp.com/'}))
 app.use(express.json())
 app.use(cookieParser())
 app.use(userRouter)
