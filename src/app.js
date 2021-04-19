@@ -10,6 +10,7 @@ const app = express()
 app.use(express.json())
 app.use(cors({credentials: true, origin: 'https://werner-bg-logger-client.herokuapp.com'}))
 app.use(cookieParser())
+app.enable('trust proxy')
 app.use(userRouter)
 app.use(gameRouter)
 
