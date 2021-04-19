@@ -13,7 +13,7 @@ router.post('/users', async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        res.cookie('token', token, { httpOnly: true })
+        res.cookie('token', token, { httpOnly: true, sameSite = 'none' })
         res.status(201).send({ user, token, games })
     } catch (e) {
         res.status(400).send(e)
@@ -25,7 +25,7 @@ router.post('/users/login', async (req, res) => {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
         const games = await Game.find({owner: user._id})
-        res.cookie('token', token, { httpOnly: true })
+        res.cookie('token', token, { httpOnly: true, sameSite = 'none' })
         res.send({ user, token, games })
     } catch (e) {
         res.status(400).send()
