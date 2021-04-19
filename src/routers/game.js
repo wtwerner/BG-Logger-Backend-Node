@@ -97,7 +97,7 @@ router.patch('/games/:id', auth, async (req, res) => {
 
 router.delete('/games/:id', auth, async (req, res) => {
     try {
-       const game = await Game.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
+       const game = await Game.findOneAndDelete({ bgaId: req.params.id, owner: req.user._id })
 
         if (!game) {
             return res.status(404).send()
